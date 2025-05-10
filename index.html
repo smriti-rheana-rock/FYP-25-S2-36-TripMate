@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FYP Project Website</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Welcome to Our FYP Website</h1>
+    <p>Project: Smart Productivity System</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>Team Members</h2>
+      <ul>
+        <li>Member A – Project Manager</li>
+        <li>Member B – Developer</li>
+        <li>Member C – Researcher</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Upload Meeting Minutes / Diaries</h2>
+      <input type="file" id="fileInput" />
+      <button onclick="uploadFile()">Upload</button>
+      <p id="uploadStatus"></p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+    // 🔧 Replace these values with YOUR Firebase config from Firebase Console
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+
+    window.uploadFile = async () => {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) {
+        alert("Please select a file to upload.");
+        return;
+      }
+
+      const storageRef = ref(storage, 'uploads/' + file.name);
+      try {
+        await uploadBytes(storageRef, file);
+        document.getElementById("uploadStatus").innerText = "Upload successful!";
+      } catch (error) {
+        console.error(error);
+        document.getElementById("uploadStatus").innerText = "Upload failed!";
+      }
+    };
+  </script>
+</body>
+</html>
